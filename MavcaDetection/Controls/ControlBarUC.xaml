@@ -1,0 +1,71 @@
+﻿<UserControl x:Class="MavcaDetection.Controls.ControlBarUC"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MavcaDetection.Controls"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        mc:Ignorable="d"
+        Name="ucControlBar"
+        d:DesignHeight="450" d:DesignWidth="800">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="MouseLeftButtonDown">
+            <i:InvokeCommandAction Command="{Binding MouseDownWindowCommand}" CommandParameter="{Binding ElementName=ucControlBar}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Grid>
+        <materialDesign:ColorZone Mode="PrimaryMid"
+                                  Padding="16">
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Right" Background="Transparent" Orientation="Horizontal">
+                    <Button ToolTip="Thu nhỏ"
+                                Background="#FF8A50"
+                                Command="{Binding MinimizeWindowCommand}"
+                                CommandParameter="{Binding ElementName=ucControlBar}">
+                        <materialDesign:PackIcon Kind="WindowMinimize" />
+                    </Button>
+                    <Button ToolTip="Phóng to"
+                                Background="#FF6F00"
+                                Command="{Binding MaximizeWindowCommand}"
+                                CommandParameter="{Binding ElementName=ucControlBar}"
+                                >
+                        <materialDesign:PackIcon Kind="WindowMaximize" />
+                    </Button>
+                    <Button ToolTip="Đóng"
+                                Background="Red"
+                                Command="{Binding CloseWindowCommand}"
+                                CommandParameter="{Binding ElementName=ucControlBar}"
+                                >
+                        <materialDesign:PackIcon Kind="WindowClose" />
+                    </Button>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                    <!--TODO - Return to MainWindow-->
+                    <ToggleButton Style="{DynamicResource MaterialDesignHamburgerToggleButton}">
+                        <!--<i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Checked">
+                                <i:InvokeCommandAction Command="{Binding MoveBackCommand}" 
+                                                       CommandParameter="{Binding ElementName=ucControlBar}"
+                                />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>-->
+                    </ToggleButton>
+                    <!--<Button ToolTip="Quay về"
+                            Background="#FF6F00"
+                            Command="{Binding MoveBackCommand}"
+                            CommandParameter="{Binding ElementName=ucControlBar}">
+                        <materialDesign:PackIcon Kind="ArrowLeft" />
+                    </Button>-->
+                    <TextBlock VerticalAlignment="Center"
+                               Margin="16 0 0 0"
+                               Foreground="White"
+                               FontSize="24"
+                               Text="{Binding Tag, ElementName=ucControlBar}"
+                               >
+                    </TextBlock>
+                </StackPanel>
+            </DockPanel>
+        </materialDesign:ColorZone>
+    </Grid>
+</UserControl>
