@@ -4,16 +4,16 @@
 winexe
 C#
 .cs
-C:\Users\PC\Desktop\Capstone\WPF\MavcaDetection\MavcaDetection\obj\Debug\netcoreapp3.1\
+C:\Users\Eden\Desktop\Mavca\mavca-wpf\MavcaDetection\obj\Debug\netcoreapp3.1\
 MavcaDetection
 none
 false
-TRACE;DEBUG;NETCOREAPP;NETCOREAPP3_1;
-C:\Users\PC\Desktop\Capstone\WPF\MavcaDetection\MavcaDetection\App.xaml
-5526696713
+TRACE;DEBUG;NETCOREAPP;NETCOREAPP3_1
+C:\Users\Eden\Desktop\Mavca\mavca-wpf\MavcaDetection\App.xaml
+5-1114693667
 
-241683282585
-222-160227376
+24-1940544869
+222807974450
 Controls\ControlBarUC.xaml;MainWindow.xaml;ResourceXAML\MainResource.xaml;Views\LoginWindow.xaml;Views\MessageBoxCustom.xaml;
 
 False
