@@ -115,8 +115,8 @@
                             Style="{StaticResource MaterialDesignRaisedButton}"
                             Margin="5"
                             Width="100"
-                            Content="Hủy"
-                            ToolTip="Hủy" />
+                            Content="Cancel"
+                            ToolTip="Cancel" />
                     <Button x:Name="btnYes"
                             Click="btnYes_Click"
                             Grid.Column="1"
@@ -124,8 +124,8 @@
                             Margin="5"
                             Width="100"
                             Foreground="White"
-                            Content="Ok"
-                            ToolTip="Ok" />
+                            Content="Yes"
+                            ToolTip="Yes" />
                     <Button x:Name="btnNo"
                             Click="btnNo_Click"
                             Grid.Column="2"
@@ -133,8 +133,8 @@
                             Margin="5"
                             Width="100"
                             Foreground="White"
-                            Content="Cancel"
-                            ToolTip="Cancel" />
+                            Content="No"
+                            ToolTip="No" />
                 </Grid>
 
             </Grid>

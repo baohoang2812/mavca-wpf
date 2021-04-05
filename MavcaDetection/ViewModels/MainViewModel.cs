@@ -3,6 +3,7 @@ using MavcaDetection.Services;
 using MavcaDetection.Views;
 using Microsoft.Win32;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace MavcaDetection.ViewModels
@@ -10,11 +11,23 @@ namespace MavcaDetection.ViewModels
     public class MainViewModel : BaseViewModel
     {
         public bool IsLoaded { get; set; } = false;
+        public bool IsStarted { get; set; } = false;
+        private string _StartButtonName;
+        public string StartButtonName
+        {
+            get { return _StartButtonName; }
+            set
+            {
+                _StartButtonName = value;
+                OnPropertyChanged();
+            }
+        }
         public ICommand LoadedWindowCommand { get; set; }
         public ICommand DetectCommand { get; set; }
         public ICommand LoadConfigCommand { get; set; }
         public MainViewModel()
         {
+            StartButtonName = "Start Detect";
             LoadedWindowCommand = new RelayCommand<Window>(p => true, p =>
             {
                 IsLoaded = true;
@@ -39,12 +52,23 @@ namespace MavcaDetection.ViewModels
             DetectCommand = new RelayCommand<object>(p => true, p =>
             {
                 var pythonService = new PyService();
-                //pythonService.Source = @"C:\Users\PC\Desktop\Capstone\mavca-detect\main.py";
-                //if (!pythonService.RunScript(null))
-                //{
-                //    new MessageBoxCustom("Script file not found!", MessageType.Error, MessageButtons.Ok).ShowDialog();
-                //}
-                pythonService.RunScript();
+                if (!IsStarted)
+                {
+                    StartButtonName = "Stop";
+                    IsStarted = true;
+                    //pythonService.RunScript();
+                    new MessageBoxCustom("Detection started", MessageType.Success, MessageButtons.Ok).ShowDialog();
+                }
+                else
+                {
+                    var result = new MessageBoxCustom("Are you sure to stop?", MessageType.Info, MessageButtons.YesNo).ShowDialog();
+                    if(result != null && result.Value == true)
+                    {
+                        IsStarted = false;
+                        StartButtonName = "Start Detect";
+                        new MessageBoxCustom("Detection stopped", MessageType.Success, MessageButtons.Ok).ShowDialog();
+                    }
+                }
             });
 
             LoadConfigCommand = new RelayCommand<object>(p => true, p =>

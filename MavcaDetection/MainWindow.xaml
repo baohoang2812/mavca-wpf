@@ -65,17 +65,17 @@
                 <Grid Grid.Row="0">
                     <Button Style="{StaticResource MaterialDesignRaisedAccentButton}"
                                 Width="200"
+                                Content ="{Binding StartButtonName, UpdateSourceTrigger=PropertyChanged}"
                                 Foreground="White"
-                                ToolTip="Resource name: MaterialDesignRaisedButton"
+                                ToolTip="Start Detect"
                                 Command="{Binding DetectCommand}"
                                 >
-                        _Start Detect
                     </Button>
                 </Grid>
                 <Grid Grid.Row="1">
                     <Button Style="{StaticResource MaterialDesignRaisedDarkButton}"
                                 Width="200"
-                                ToolTip="Resource name: MaterialDesignRaisedButton"
+                                ToolTip="Load Config"
                                 Command="{Binding LoadConfigCommand}"
                                 >
                         _Load Configuration
