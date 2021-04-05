@@ -1,6 +1,7 @@
 ﻿using MavcaDetection.Constants;
 using MavcaDetection.Services;
 using MavcaDetection.Views;
+using Microsoft.Win32;
 using System.Windows;
 using System.Windows.Input;
 
@@ -48,7 +49,15 @@ namespace MavcaDetection.ViewModels
 
             LoadConfigCommand = new RelayCommand<object>(p => true, p =>
             {
-
+                var dialog = new OpenFileDialog();
+                dialog.DefaultExt = ".json";
+                dialog.Filter = "Json files (*.json)|*.json";
+                var result = dialog.ShowDialog();
+                if(result == true)
+                {
+                    string filename = dialog.FileName;
+                    new MessageBoxCustom("Load Configuration Success", MessageType.Success, MessageButtons.Ok).ShowDialog();
+                }
             });
         }
     }

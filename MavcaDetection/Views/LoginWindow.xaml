@@ -81,7 +81,7 @@
                         <Grid Grid.Column="0">
                             <Button Style="{StaticResource MaterialDesignOutlinedButton}"
                                 Width="100"
-                                ToolTip="Resource name: MaterialDesignRaisedButton"
+                                ToolTip="Clear"
                                 Command="{Binding ClearCommand}"
                                 CommandParameter="{Binding ElementName=FloatingPasswordBox}"
                                 >
@@ -91,7 +91,7 @@
                         <Grid Grid.Column="1">
                             <Button Style="{StaticResource MaterialDesignRaisedButton}"
                                 Width="100"
-                                ToolTip="Resource name: MaterialDesignRaisedButton"
+                                ToolTip="Login"
                                 Command="{Binding LoginCommand}"
                                 CommandParameter="{Binding ElementName=loginWindow}"
                                 IsDefault="True"
