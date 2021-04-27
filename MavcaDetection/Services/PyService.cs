@@ -8,6 +8,8 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace MavcaDetection.Services
 {
@@ -15,6 +17,7 @@ namespace MavcaDetection.Services
     {
         private readonly ScriptEngine _Engine;
         private readonly ScriptSource _ScriptSource;
+        public int TablewareProcessId { get; set; }
         private Config _config;
         private string BaseDirectory;
         public string Source { get; set; }
@@ -34,21 +37,21 @@ namespace MavcaDetection.Services
             }
         }
 
-        public bool RunScript(List<string> args)
-        {
-            if (args != null)
-            {
-               _Engine.GetSysModule().SetVariable("argv", args);
-            }
-            if(_ScriptSource == null)
-            {
-                return false;
-            }
-            var scope = _Engine.CreateScope();
-            _ScriptSource.Execute(scope);
-            DisplayOutput();
-            return true;
-        }
+        //public bool RunScript(List<string> args)
+        //{
+        //    if (args != null)
+        //    {
+        //        _Engine.GetSysModule().SetVariable("argv", args);
+        //    }
+        //    if (_ScriptSource == null)
+        //    {
+        //        return false;
+        //    }
+        //    var scope = _Engine.CreateScope();
+        //    _ScriptSource.Execute(scope);
+        //    DisplayOutput();
+        //    return true;
+        //}
 
         private void LoadJson()
         {
@@ -80,41 +83,95 @@ namespace MavcaDetection.Services
             return true;
         }
 
-        public void RunScript(string violation)
+        public Task RunScript(string violation, CancellationToken cancellationToken)
         {
-            var fileName = $"{BaseDirectory}/mavca-venv/Scripts/python.exe";
-            var info = new ProcessStartInfo(fileName);
-            info.FileName = "cmd.exe";
-            info.CreateNoWindow = false;
-            info.RedirectStandardInput = true;
-            info.RedirectStandardOutput = true;
-            info.UseShellExecute = false;
-            using (var process = new Process())
+            return Task.Run(() =>
             {
-                process.StartInfo = info;
-                process.Start();
-                var activateCommand = $"{BaseDirectory}/mavca-venv/Scripts/activate.bat";
-                process.StandardInput.WriteLine(activateCommand);
-                var changeDirectoryCommand = $"cd {BaseDirectory}";
-                process.StandardInput.WriteLine(changeDirectoryCommand);
-                if(violation == DetectionTypeConstant.Phone)
+                var fileName = $"{BaseDirectory}/mavca-venv/Scripts/python.exe";
+                var info = new ProcessStartInfo(fileName);
+
+                info.FileName = "cmd.exe";
+                info.CreateNoWindow = false;
+                info.RedirectStandardInput = true;
+                info.RedirectStandardOutput = true;
+                info.UseShellExecute = false;
+                using (var process = new Process())
                 {
-                    process.StandardInput.WriteLine("python main_tracking_mobile.py");
+                    process.StartInfo = info;
+                    process.Start();
+                    var activateCommand = $"{BaseDirectory}/mavca-venv/Scripts/activate.bat";
+                    process.StandardInput.WriteLine(activateCommand);
+                    var changeDirectoryCommand = $"cd {BaseDirectory}";
+                    process.StandardInput.WriteLine(changeDirectoryCommand);
+                    if (violation == DetectionTypeConstant.Phone)
+                    {
+                        process.StandardInput.WriteLine("python main_tracking_mobile.py");
+                    }
+                    else if (violation == DetectionTypeConstant.Hand)
+                    {
+                        process.StandardInput.WriteLine("python main_tracking.py");
+                    }
+                    else if (violation == DetectionTypeConstant.TableWare)
+                    {
+                        process.StandardInput.WriteLine("python main.py");
+                    }
+                    // read multiple output lines
+                    while (!process.StandardOutput.EndOfStream)
+                    {
+                        var line = process.StandardOutput.ReadLine();
+                        Console.WriteLine(line);
+                    }
                 }
-                else if (violation == DetectionTypeConstant.Hand)
+            }, cancellationToken);
+        }
+
+        public bool TerminateProcessByName(string name)
+        {
+            try
+            {
+                var processes = Process.GetProcessesByName(name);
+                foreach (var process in processes)
                 {
-                    process.StandardInput.WriteLine("python main_tracking.py");
+                    process.Kill();
                 }
-                else if(violation == DetectionTypeConstant.TableWare)
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+
+        public bool TerminateAllProcess()
+        {
+            try
+            {
+                var processes = Process.GetProcesses();
+                foreach (var process in processes)
                 {
-                    process.StandardInput.WriteLine("python main.py");
+                    process.Kill();
                 }
-                // read multiple output lines
-                while (!process.StandardOutput.EndOfStream)
-                {
-                    var line = process.StandardOutput.ReadLine();
-                    Console.WriteLine(line);
-                }
+                return true;
+            }
+            catch(Exception e)
+            {
+                return false;
+            }
+            
+
+        }
+
+        public bool TerminateProcessById(int id)
+        {
+            try
+            {
+                var process = Process.GetProcessById(id);
+                process.Kill();
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
             }
         }
 
