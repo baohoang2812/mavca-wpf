@@ -11,23 +11,52 @@ namespace MavcaDetection.ViewModels
     public class MainViewModel : BaseViewModel
     {
         public bool IsLoaded { get; set; } = false;
-        public bool IsStarted { get; set; } = false;
-        private string _StartButtonName;
-        public string StartButtonName
+        public bool IsHandDetectionEnabled { get; set; } = false;
+        public bool IsPhoneDetectionEnabled { get; set; } = false;
+        public bool IsTablewareDetectionEnabled { get; set; } = false;
+        private string _EnableTableSetupDetectionButtonName;
+        public string EnableTableSetupDetectionButtonName
         {
-            get { return _StartButtonName; }
+            get { return _EnableTableSetupDetectionButtonName; }
             set
             {
-                _StartButtonName = value;
+                _EnableTableSetupDetectionButtonName = value;
                 OnPropertyChanged();
             }
         }
+
+        private string _EnableBareHandDetectionButtonName;
+        public string EnableBareHandDetectionButtonName
+        {
+            get { return _EnableBareHandDetectionButtonName; }
+            set
+            {
+                _EnableBareHandDetectionButtonName = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _EnablePhoneDetectionButtonName;
+        public string EnablePhoneDetectionButtonName
+        {
+            get { return _EnablePhoneDetectionButtonName; }
+            set
+            {
+                _EnablePhoneDetectionButtonName = value;
+                OnPropertyChanged();
+            }
+        }
+
         public ICommand LoadedWindowCommand { get; set; }
-        public ICommand DetectCommand { get; set; }
+        public ICommand DetectTablewareCommand { get; set; }
+        public ICommand DetectHandCommand { get; set; }
+        public ICommand DetectPhoneCommand { get; set; }
         public ICommand LoadConfigCommand { get; set; }
         public MainViewModel()
         {
-            StartButtonName = "Start Detect";
+            EnableTableSetupDetectionButtonName = "Enable Tableware Detection";
+            EnableBareHandDetectionButtonName = "Enable Hand Detection";
+            EnablePhoneDetectionButtonName = "Enable Phone Detection";
             LoadedWindowCommand = new RelayCommand<Window>(p => true, p =>
             {
                 IsLoaded = true;
@@ -49,24 +78,68 @@ namespace MavcaDetection.ViewModels
                 }
             });
 
-            DetectCommand = new RelayCommand<object>(p => true, p =>
+            DetectTablewareCommand = new RelayCommand<object>(p => true, p =>
             {
                 var pythonService = new PyService();
-                if (!IsStarted)
+                if (!IsTablewareDetectionEnabled)
                 {
-                    StartButtonName = "Stop";
-                    IsStarted = true;
+                    EnableTableSetupDetectionButtonName = "Disable Tableware Detection";
+                    IsTablewareDetectionEnabled = true;
+                    pythonService.RunScript();
+                    new MessageBoxCustom("Tableware Detection started", MessageType.Success, MessageButtons.Ok).ShowDialog();
+                }
+                else
+                {
+                    var result = new MessageBoxCustom("Are you sure to stop?", MessageType.Info, MessageButtons.YesNo).ShowDialog();
+                    if (result != null && result.Value == true)
+                    {
+                        IsTablewareDetectionEnabled = false;
+                        EnableTableSetupDetectionButtonName = "Enable Tableware Detection";
+                        new MessageBoxCustom("Tableware Detection stopped", MessageType.Success, MessageButtons.Ok).ShowDialog();
+                    }
+                }
+            });
+
+            DetectHandCommand = new RelayCommand<object>(p => true, p =>
+            {
+                var pythonService = new PyService();
+                if (!IsHandDetectionEnabled)
+                {
+                    EnableBareHandDetectionButtonName = "Disable Hand Detection";
+                    IsHandDetectionEnabled = true;
                     //pythonService.RunScript();
-                    new MessageBoxCustom("Detection started", MessageType.Success, MessageButtons.Ok).ShowDialog();
+                    new MessageBoxCustom("Hand Detection enabled", MessageType.Success, MessageButtons.Ok).ShowDialog();
                 }
                 else
                 {
                     var result = new MessageBoxCustom("Are you sure to stop?", MessageType.Info, MessageButtons.YesNo).ShowDialog();
                     if(result != null && result.Value == true)
                     {
-                        IsStarted = false;
-                        StartButtonName = "Start Detect";
-                        new MessageBoxCustom("Detection stopped", MessageType.Success, MessageButtons.Ok).ShowDialog();
+                        IsHandDetectionEnabled = false;
+                        EnableTableSetupDetectionButtonName = "Enable Hand Detect";
+                        new MessageBoxCustom("Hand Detection stopped", MessageType.Success, MessageButtons.Ok).ShowDialog();
+                    }
+                }
+            });
+
+            DetectPhoneCommand = new RelayCommand<object>(p => true, p =>
+            {
+                var pythonService = new PyService();
+                if (!IsPhoneDetectionEnabled)
+                {
+                    EnablePhoneDetectionButtonName = "Disable Phone Detection";
+                    IsPhoneDetectionEnabled = true;
+                    //pythonService.RunScript();
+                    new MessageBoxCustom("Phone Detection enabled", MessageType.Success, MessageButtons.Ok).ShowDialog();
+                }
+                else
+                {
+                    var result = new MessageBoxCustom("Are you sure to stop?", MessageType.Info, MessageButtons.YesNo).ShowDialog();
+                    if (result != null && result.Value == true)
+                    {
+                        IsPhoneDetectionEnabled = false;
+                        EnablePhoneDetectionButtonName = "Enable Phone Detection";
+                        new MessageBoxCustom("Phone Detection disabled", MessageType.Success, MessageButtons.Ok).ShowDialog();
                     }
                 }
             });

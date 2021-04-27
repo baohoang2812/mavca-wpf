@@ -17,7 +17,7 @@ namespace MavcaDetection.Services
     {
         private readonly HttpClient _client;
         protected Uri EndPoint { get; set; }
-        protected const string BaseURL = "https://mavcahub-api.azurewebsites.net/v1/";
+        protected const string BaseURL = "https://mavca-backend.azurewebsites.net/v1/";
 
         public BaseService()
         {

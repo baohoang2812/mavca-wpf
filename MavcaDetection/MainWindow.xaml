@@ -64,17 +64,37 @@
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0">
                     <Button Style="{StaticResource MaterialDesignRaisedAccentButton}"
-                                Width="200"
-                                Content ="{Binding StartButtonName, UpdateSourceTrigger=PropertyChanged}"
+                                Width="250"
+                                Content ="{Binding EnableBareHandDetectionButtonName, UpdateSourceTrigger=PropertyChanged}"
                                 Foreground="White"
-                                ToolTip="Start Detect"
-                                Command="{Binding DetectCommand}"
+                                ToolTip="Hand Detection"
+                                Command="{Binding DetectHandCommand}"
                                 >
                     </Button>
                 </Grid>
                 <Grid Grid.Row="1">
+                    <Button Style="{StaticResource MaterialDesignRaisedAccentButton}"
+                                Width="250"
+                                Content ="{Binding EnablePhoneDetectionButtonName, UpdateSourceTrigger=PropertyChanged}"
+                                Foreground="White"
+                                ToolTip="Phone Detection"
+                                Command="{Binding DetectPhoneCommand}"
+                                >
+                    </Button>
+                </Grid>
+                <Grid Grid.Row="2">
+                    <Button Style="{StaticResource MaterialDesignRaisedAccentButton}"
+                                Width="250"
+                                Content ="{Binding EnableTableSetupDetectionButtonName, UpdateSourceTrigger=PropertyChanged}"
+                                Foreground="White"
+                                ToolTip="Tableware detection"
+                                Command="{Binding DetectTablewareCommand}"
+                                >
+                    </Button>
+                </Grid>
+                <Grid Grid.Row="3">
                     <Button Style="{StaticResource MaterialDesignRaisedDarkButton}"
-                                Width="200"
+                                Width="250"
                                 ToolTip="Load Config"
                                 Command="{Binding LoadConfigCommand}"
                                 >
