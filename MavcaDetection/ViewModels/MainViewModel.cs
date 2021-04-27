@@ -85,7 +85,7 @@ namespace MavcaDetection.ViewModels
                 {
                     EnableTableSetupDetectionButtonName = "Disable Tableware Detection";
                     IsTablewareDetectionEnabled = true;
-                    pythonService.RunScript();
+                    pythonService.RunScript(DetectionTypeConstant.TableWare);
                     new MessageBoxCustom("Tableware Detection started", MessageType.Success, MessageButtons.Ok).ShowDialog();
                 }
                 else
@@ -107,7 +107,7 @@ namespace MavcaDetection.ViewModels
                 {
                     EnableBareHandDetectionButtonName = "Disable Hand Detection";
                     IsHandDetectionEnabled = true;
-                    //pythonService.RunScript();
+                    pythonService.RunScript(DetectionTypeConstant.Hand);
                     new MessageBoxCustom("Hand Detection enabled", MessageType.Success, MessageButtons.Ok).ShowDialog();
                 }
                 else
@@ -129,7 +129,7 @@ namespace MavcaDetection.ViewModels
                 {
                     EnablePhoneDetectionButtonName = "Disable Phone Detection";
                     IsPhoneDetectionEnabled = true;
-                    //pythonService.RunScript();
+                    pythonService.RunScript(DetectionTypeConstant.Phone);
                     new MessageBoxCustom("Phone Detection enabled", MessageType.Success, MessageButtons.Ok).ShowDialog();
                 }
                 else

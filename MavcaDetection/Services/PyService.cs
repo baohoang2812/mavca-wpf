@@ -1,5 +1,7 @@
 ﻿using IronPython.Hosting;
+using MavcaDetection.Constants;
 using Microsoft.Scripting.Hosting;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,16 +14,20 @@ namespace MavcaDetection.Services
     {
         private readonly ScriptEngine _Engine;
         private readonly ScriptSource _ScriptSource;
+        private Config _config;
+        private string BaseDirectory;
         public string Source { get; set; }
         public PyService()
         {
+            LoadJson();
+            BaseDirectory = _config.DetectionRootFolder;
             if (_Engine != null)
             {
                 _Engine = Python.CreateEngine();
                 ICollection<string> searchPaths = _Engine.GetSearchPaths();
-                searchPaths.Add(@"C:\Users\PC\Desktop\Capstone\mavca-detect\mavca-venv");
-                searchPaths.Add(@"C:\Users\PC\Desktop\Capstone\mavca-detect\mavca-venv\Lib\site-packages");
-                searchPaths.Add(@"C:\Users\PC\Desktop\Capstone\mavca-detect\mavca-venv\Lib");
+                searchPaths.Add($"{BaseDirectory}\\mavca-venv");
+                searchPaths.Add($"{BaseDirectory}\\mavca-venv\\Lib\\site-packages");
+                searchPaths.Add($"{BaseDirectory}\\mavca-venv\\Lib");
                 _Engine.SetSearchPaths(searchPaths);
                 _ScriptSource = _Engine.CreateScriptSourceFromFile(Source);
             }
@@ -43,9 +49,15 @@ namespace MavcaDetection.Services
             return true;
         }
 
-        public void RunScript()
+        private void LoadJson()
         {
-            var info = new ProcessStartInfo(@"C:/Users/PC/Desktop/Capstone/mavca-detect/mavca-venv/Scripts/python.exe");
+            var json = File.ReadAllText("config.json");
+            _config = JsonConvert.DeserializeObject<Config>(json);
+        }
+        public void RunScript(string violation)
+        {
+            var fileName = $"{BaseDirectory}/mavca-venv/Scripts/python.exe";
+            var info = new ProcessStartInfo(fileName);
             info.FileName = "cmd.exe";
             info.CreateNoWindow = false;
             info.RedirectStandardInput = true;
@@ -55,9 +67,22 @@ namespace MavcaDetection.Services
             {
                 process.StartInfo = info;
                 process.Start();
-                process.StandardInput.WriteLine(@"c:/Users/PC/Desktop/Capstone/mavca-detect/mavca-venv/Scripts/activate.bat");
-                process.StandardInput.WriteLine(@"cd c:/Users/PC/Desktop/Capstone/mavca-detect");
-                process.StandardInput.WriteLine("python main.py");
+                var activateCommand = $"{BaseDirectory}/mavca-venv/Scripts/activate.bat";
+                process.StandardInput.WriteLine(activateCommand);
+                var changeDirectoryCommand = $"cd {BaseDirectory}";
+                process.StandardInput.WriteLine(changeDirectoryCommand);
+                if(violation == DetectionTypeConstant.Phone)
+                {
+                    process.StandardInput.WriteLine("python main_tracking_mobile.py");
+                }
+                else if (violation == DetectionTypeConstant.Hand)
+                {
+                    process.StandardInput.WriteLine("python main_tracking.py");
+                }
+                else if(violation == DetectionTypeConstant.TableWare)
+                {
+                    process.StandardInput.WriteLine("python main.py");
+                }
                 // read multiple output lines
                 while (!process.StandardOutput.EndOfStream)
                 {

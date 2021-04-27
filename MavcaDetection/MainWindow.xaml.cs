@@ -1,4 +1,6 @@
-﻿using MavcaDetection.Views;
+﻿using MavcaDetection.ViewModels;
+using MavcaDetection.Views;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
