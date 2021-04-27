@@ -147,13 +147,21 @@ namespace MavcaDetection.ViewModels
             LoadConfigCommand = new RelayCommand<object>(p => true, p =>
             {
                 var dialog = new OpenFileDialog();
-                dialog.DefaultExt = ".json";
-                dialog.Filter = "Json files (*.json)|*.json";
+                dialog.DefaultExt = ".zip";
+                dialog.Filter = "ZIP|*.zip";
                 var result = dialog.ShowDialog();
                 if(result == true)
                 {
                     string filename = dialog.FileName;
-                    new MessageBoxCustom("Load Configuration Success", MessageType.Success, MessageButtons.Ok).ShowDialog();
+                    var pythonService = new PyService();
+                    if (pythonService.LoadConfiguration(filename))
+                    {
+                        new MessageBoxCustom("Load Configuration Success", MessageType.Success, MessageButtons.Ok).ShowDialog();
+                    }
+                    else
+                    {
+                        new MessageBoxCustom("Invalid configuration file", MessageType.Error, MessageButtons.Ok).ShowDialog();
+                    }
                 }
             });
         }

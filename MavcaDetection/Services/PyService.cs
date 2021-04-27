@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Text;
 
 namespace MavcaDetection.Services
@@ -54,6 +55,31 @@ namespace MavcaDetection.Services
             var json = File.ReadAllText("config.json");
             _config = JsonConvert.DeserializeObject<Config>(json);
         }
+
+        public bool LoadConfiguration(string sourcePath)
+        {
+            var fileNameWithoutExt = Path.GetFileNameWithoutExtension(sourcePath);
+            var fileName = Path.GetFileName(sourcePath);
+            if (fileName != "mavca-detect.zip")
+            {
+                return false;
+            }
+            var currentDirectory = Directory.GetCurrentDirectory();
+            var targetPath = $"{currentDirectory}\\{fileName}";
+            if (File.Exists(sourcePath))
+            {
+                File.Copy(sourcePath, targetPath, overwrite: true);
+                var extractDirectory = $"{currentDirectory}\\{fileNameWithoutExt}";
+                if (!Directory.Exists(extractDirectory))
+                {
+                    Directory.CreateDirectory(extractDirectory);
+                }
+                ZipFile.ExtractToDirectory(targetPath, extractDirectory, overwriteFiles: true);
+                BaseDirectory = extractDirectory.Replace(@"\", @"/");
+            }
+            return true;
+        }
+
         public void RunScript(string violation)
         {
             var fileName = $"{BaseDirectory}/mavca-venv/Scripts/python.exe";
