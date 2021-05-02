@@ -28,11 +28,11 @@ namespace MavcaDetection.Services
             if (_Engine != null)
             {
                 _Engine = Python.CreateEngine();
-                //ICollection<string> searchPaths = _Engine.GetSearchPaths();
-                //searchPaths.Add($"{BaseDirectory}\\mavca-venv");
+                ICollection<string> searchPaths = _Engine.GetSearchPaths();
+                searchPaths.Add($"{BaseDirectory}");
                 //searchPaths.Add($"{BaseDirectory}\\mavca-venv\\Lib\\site-packages");
                 //searchPaths.Add($"{BaseDirectory}\\mavca-venv\\Lib");
-                //_Engine.SetSearchPaths(searchPaths);
+                _Engine.SetSearchPaths(searchPaths);
                 _ScriptSource = _Engine.CreateScriptSourceFromFile(Source);
             }
         }
@@ -90,35 +90,45 @@ namespace MavcaDetection.Services
         {
             return Task.Run(() =>
             {
-                //var fileName = $"{BaseDirectory}/mavca-venv/Scripts/python.exe";
-                var fileName = $"{BaseDirectory}";
-                var info = new ProcessStartInfo(fileName);
-
-                info.FileName = "cmd.exe";
-                info.CreateNoWindow = false;
+                var info = new ProcessStartInfo();
+                //info.WorkingDirectory = $"{BaseDirectory}";
+                Environment.CurrentDirectory = $"{BaseDirectory}";
+                if (violation == DetectionTypeConstant.Phone)
+                {
+                    info.FileName = @"main_tracking_mobile.exe";
+                }
+                else if (violation == DetectionTypeConstant.Hand)
+                {
+                    info.FileName = @"main_tracking.exe";
+                }
+                else if (violation == DetectionTypeConstant.TableWare)
+                {
+                    info.FileName = @"main.exe";
+                }
+                info.CreateNoWindow = true;
                 info.RedirectStandardInput = true;
                 info.RedirectStandardOutput = true;
-                info.UseShellExecute = false;
+                info.StandardOutputEncoding = Encoding.UTF8;
                 using (var process = new Process())
                 {
                     process.StartInfo = info;
                     process.Start();
                     //var activateCommand = $"{BaseDirectory}/mavca-venv/Scripts/activate.bat";
                     //process.StandardInput.WriteLine(activateCommand);
-                    var changeDirectoryCommand = $"cd {BaseDirectory}";
-                    process.StandardInput.WriteLine(changeDirectoryCommand);
-                    if (violation == DetectionTypeConstant.Phone)
-                    {
-                        process.StandardInput.WriteLine("main_tracking_mobile.exe");
-                    }
-                    else if (violation == DetectionTypeConstant.Hand)
-                    {
-                        process.StandardInput.WriteLine("main_tracking.exe");
-                    }
-                    else if (violation == DetectionTypeConstant.TableWare)
-                    {
-                        process.StandardInput.WriteLine("main.exe");
-                    }
+                    //var changeDirectoryCommand = $"cd {BaseDirectory}";
+                    //process.StandardInput.WriteLine(changeDirectoryCommand);
+                    //if (violation == DetectionTypeConstant.Phone)
+                    //{
+                    //    process.StandardInput.WriteLine("main_tracking_mobile.exe");
+                    //}
+                    //else if (violation == DetectionTypeConstant.Hand)
+                    //{
+                    //    process.StandardInput.WriteLine("main_tracking.exe");
+                    //}
+                    //else if (violation == DetectionTypeConstant.TableWare)
+                    //{
+                    //    process.StandardInput.WriteLine("main.exe");
+                    //}
                     // read multiple output lines
                     while (!process.StandardOutput.EndOfStream)
                     {
