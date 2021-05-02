@@ -16,8 +16,6 @@ namespace MavcaDetection.ViewModels
         public bool IsHandDetectionEnabled { get; set; } = false;
         public bool IsPhoneDetectionEnabled { get; set; } = false;
         public bool IsTablewareDetectionEnabled { get; set; } = false;
-        public int HandProcessId { get; set; }
-        public int PhoneProcessId { get; set; }
         private string _EnableTableSetupDetectionButtonName;
         public string EnableTableSetupDetectionButtonName
         {
@@ -72,9 +70,8 @@ namespace MavcaDetection.ViewModels
                 if(loginWindow.DataContext == null)
                    return;
                 var loginVM = loginWindow.DataContext as LoginViewModel;
-                //if (loginVM.IsLogin)
-                if (true)
-                    {
+                if (loginVM.IsLogin)
+                {
                     p.Show();
                 }
                 else
@@ -100,10 +97,10 @@ namespace MavcaDetection.ViewModels
                     var result = new MessageBoxCustom("Are you sure to stop?", MessageType.Info, MessageButtons.YesNo).ShowDialog();
                     if (result != null && result.Value == true)
                     {
-                        cancelSource.Cancel();
                         IsTablewareDetectionEnabled = false;
                         EnableTableSetupDetectionButtonName = "Enable Tableware Detection";
                         new MessageBoxCustom("Tableware Detection stopped", MessageType.Success, MessageButtons.Ok).ShowDialog();
+                        cancelSource.Cancel();
                     }
                 }
             });
@@ -124,10 +121,10 @@ namespace MavcaDetection.ViewModels
                     var result = new MessageBoxCustom("Are you sure to stop?", MessageType.Info, MessageButtons.YesNo).ShowDialog();
                     if(result != null && result.Value == true)
                     {
-                        pythonService.TerminateProcessById(HandProcessId);
                         IsHandDetectionEnabled = false;
-                        EnableTableSetupDetectionButtonName = "Enable Hand Detect";
+                        EnableBareHandDetectionButtonName = "Enable Hand Detect";
                         new MessageBoxCustom("Hand Detection stopped", MessageType.Success, MessageButtons.Ok).ShowDialog();
+                        cancelSource.Cancel();
                     }
                 }
             });
@@ -148,10 +145,10 @@ namespace MavcaDetection.ViewModels
                     var result = new MessageBoxCustom("Are you sure to stop?", MessageType.Info, MessageButtons.YesNo).ShowDialog();
                     if (result != null && result.Value == true)
                     {
-                        pythonService.TerminateProcessById(PhoneProcessId);
                         IsPhoneDetectionEnabled = false;
                         EnablePhoneDetectionButtonName = "Enable Phone Detection";
                         new MessageBoxCustom("Phone Detection disabled", MessageType.Success, MessageButtons.Ok).ShowDialog();
+                        cancelSource.Cancel();
                     }
                 }
             });

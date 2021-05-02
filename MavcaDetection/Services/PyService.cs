@@ -28,15 +28,18 @@ namespace MavcaDetection.Services
             if (_Engine != null)
             {
                 _Engine = Python.CreateEngine();
-                ICollection<string> searchPaths = _Engine.GetSearchPaths();
-                searchPaths.Add($"{BaseDirectory}\\mavca-venv");
-                searchPaths.Add($"{BaseDirectory}\\mavca-venv\\Lib\\site-packages");
-                searchPaths.Add($"{BaseDirectory}\\mavca-venv\\Lib");
-                _Engine.SetSearchPaths(searchPaths);
+                //ICollection<string> searchPaths = _Engine.GetSearchPaths();
+                //searchPaths.Add($"{BaseDirectory}\\mavca-venv");
+                //searchPaths.Add($"{BaseDirectory}\\mavca-venv\\Lib\\site-packages");
+                //searchPaths.Add($"{BaseDirectory}\\mavca-venv\\Lib");
+                //_Engine.SetSearchPaths(searchPaths);
                 _ScriptSource = _Engine.CreateScriptSourceFromFile(Source);
             }
         }
 
+        /// <summary>
+        /// deprecated
+        /// </summary>
         //public bool RunScript(List<string> args)
         //{
         //    if (args != null)
@@ -87,7 +90,8 @@ namespace MavcaDetection.Services
         {
             return Task.Run(() =>
             {
-                var fileName = $"{BaseDirectory}/mavca-venv/Scripts/python.exe";
+                //var fileName = $"{BaseDirectory}/mavca-venv/Scripts/python.exe";
+                var fileName = $"{BaseDirectory}";
                 var info = new ProcessStartInfo(fileName);
 
                 info.FileName = "cmd.exe";
@@ -99,21 +103,21 @@ namespace MavcaDetection.Services
                 {
                     process.StartInfo = info;
                     process.Start();
-                    var activateCommand = $"{BaseDirectory}/mavca-venv/Scripts/activate.bat";
-                    process.StandardInput.WriteLine(activateCommand);
+                    //var activateCommand = $"{BaseDirectory}/mavca-venv/Scripts/activate.bat";
+                    //process.StandardInput.WriteLine(activateCommand);
                     var changeDirectoryCommand = $"cd {BaseDirectory}";
                     process.StandardInput.WriteLine(changeDirectoryCommand);
                     if (violation == DetectionTypeConstant.Phone)
                     {
-                        process.StandardInput.WriteLine("python main_tracking_mobile.py");
+                        process.StandardInput.WriteLine("main_tracking_mobile.exe");
                     }
                     else if (violation == DetectionTypeConstant.Hand)
                     {
-                        process.StandardInput.WriteLine("python main_tracking.py");
+                        process.StandardInput.WriteLine("main_tracking.exe");
                     }
                     else if (violation == DetectionTypeConstant.TableWare)
                     {
-                        process.StandardInput.WriteLine("python main.py");
+                        process.StandardInput.WriteLine("main.exe");
                     }
                     // read multiple output lines
                     while (!process.StandardOutput.EndOfStream)
